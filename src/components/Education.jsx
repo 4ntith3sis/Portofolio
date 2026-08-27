@@ -8,17 +8,23 @@ export default function Education() {
     <section id="education" className="py-24 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Tag */}
-        <div className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase">
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
+        >
           <span>05 / EDUCATION</span>
           <span>ACADEMIC BACKGROUND</span>
-        </div>
+        </motion.div>
 
         {/* Editorial Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 35 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.6 }}
             className="lg:col-span-4"
           >
@@ -28,9 +34,9 @@ export default function Education() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 35 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-8 border-t lg:border-t-0 lg:border-l border-border pt-8 lg:pt-0 lg:pl-12"
           >
@@ -65,3 +71,4 @@ export default function Education() {
     </section>
   );
 }
+

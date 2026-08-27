@@ -9,9 +9,9 @@ export default function ProjectItem({ project, index }) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 35 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: false, amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="border-b border-border py-12 lg:py-16 group transition-colors hover:bg-background/60"
     >

@@ -8,26 +8,38 @@ export default function Expertise() {
     <section id="expertise" className="py-24 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Tag */}
-        <div className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase">
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
+        >
           <span>03 / EXPERTISE</span>
           <span>TECHNICAL CAPABILITIES</span>
-        </div>
+        </motion.div>
 
         {/* Header */}
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-foreground mb-16 max-w-2xl">
+        <motion.h2
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-foreground mb-16 max-w-2xl"
+        >
           TECHNICAL TOOLKIT & DISCIPLINARY STACK
-        </h2>
+        </motion.h2>
 
         {/* 4-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {skillCategories.map((group, idx) => (
             <motion.div
               key={group.category}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="border border-border p-6 bg-background flex flex-col justify-between"
+              className="border border-border p-6 bg-background flex flex-col justify-between hover:border-accent/50 transition-colors"
             >
               <div>
                 <div className="flex items-center justify-between border-b border-border pb-3 mb-6">
@@ -57,3 +69,4 @@ export default function Expertise() {
     </section>
   );
 }
+

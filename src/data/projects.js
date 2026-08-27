@@ -29,7 +29,7 @@ export const projects = [
     description: "A modern home lifestyle store management system for Edgar Space, designed to manage home accessories and decoration products through product management, category management, flexible product specifications, inventory tracking, curated collections, and a dedicated administrative dashboard.",
     technologies: ["Next.js", "React", "Tailwind CSS", "Express.js", "PostgreSQL"],
     image: "/projects/edgar-space.webp",
-    sourceUrl: "https://github.com/daffaabdulfatah/EDGAR-SPACE",
+    sourceUrl: "https://github.com/daffaabdulfatah/edgar-space",
     featured: true
   }
 ];
