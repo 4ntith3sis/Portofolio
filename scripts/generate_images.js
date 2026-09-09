@@ -89,7 +89,7 @@ async function run() {
   await generateProfile();
   await generateProject('edgar-space.webp', 'Edgar Space', 'E-commerce Architecture', '01 / SELECTED WORK');
   await generateProject('nuna-florist.webp', 'Nuna Florist', 'Productivity Analytics', '02 / SELECTED WORK');
-  await generateProject('yugenix-lab.webp', 'Yugenix Lab', 'Digital Workflow Platform', '03 / SELECTED WORK');
+  await generateProject('kares-studio.webp', 'Kares Studio', 'Fashion E-commerce Showcase', '03 / SELECTED WORK');
 }
 
 run().catch(console.error);

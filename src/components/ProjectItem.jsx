@@ -89,7 +89,7 @@ export default function ProjectItem({ project, index }) {
 
           {/* Action Links */}
           <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-border/40 font-mono text-xs tracking-widest uppercase">
-            {hasLiveUrl && (
+            {hasLiveUrl ? (
               <a
                 href={project.liveUrl}
                 target="_blank"
@@ -100,6 +100,11 @@ export default function ProjectItem({ project, index }) {
                 <span>LIVE PREVIEW</span>
                 <ArrowUpRight size={14} className="group-hover/live:-translate-y-0.5 group-hover/live:translate-x-0.5 transition-transform" />
               </a>
+            ) : (
+              <span className="inline-flex items-center gap-2 text-secondary/40 font-bold py-1 select-none">
+                <ExternalLink size={15} className="opacity-40" />
+                <span>LIVE PREVIEW UNAVAILABLE</span>
+              </span>
             )}
             {hasSourceUrl && (
               <a

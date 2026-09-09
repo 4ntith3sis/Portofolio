@@ -24,13 +24,13 @@ export const projects = [
   },
   {
     number: "03",
-    slug: "Yugenix.Lab",
-    title: "Yugenix Lab",
-    subtitle: "Clothing Catalog & Order Management System",
-    description: "A modern clothing catalog and order management system featuring product browsing, category management, inventory tracking, and a seamless shopping experience.",
-    technologies: ["React", "Tailwind CSS", "Node.js", "PostgreSQL"],
-    image: "/projects/yugenix-lab.webp",
-    sourceUrl: "https://github.com/daffaabdulfatah/Yugenix.Lab",
+    slug: "Kares Studio",
+    title: "Kares Studio",
+    subtitle: "High-Fashion Showcase & E-commerce Platform",
+    description: "A modern high-fashion e-commerce showcase for Kares Studio, featuring curated collections, exclusive drops, product specifications, and a high-end editorial shopping experience.",
+    technologies: ["React", "Tailwind CSS", "Express.js", "PostgreSQL"],
+    image: "/projects/kares-studio.webp",
+    sourceUrl: "https://github.com/daffaabdulfatah/Kares-Studio",
     featured: true
   }
 ];
