@@ -28,7 +28,7 @@ export const projects = [
     title: "Kares Studio",
     subtitle: "High-Fashion Showcase & E-commerce Platform",
     description: "A modern high-fashion e-commerce showcase for Kares Studio, featuring curated collections, exclusive drops, product specifications, and a high-end editorial shopping experience.",
-    technologies: ["React", "Tailwind CSS", "Express.js", "PostgreSQL"],
+    technologies: ["Next.js 14", "React 18", "TypeScript 5", "Supabase", "PostgreSQL", "Custom CSS"],
     image: "/projects/kares-studio.webp",
     sourceUrl: "https://github.com/daffaabdulfatah/Kares-Studio",
     featured: true
