@@ -30,6 +30,7 @@ export const projects = [
     description: "A modern high-fashion e-commerce showcase for Kares Studio, featuring curated collections, exclusive drops, product specifications, and a high-end editorial shopping experience.",
     technologies: ["Next.js 14", "React 18", "TypeScript 5", "Supabase", "PostgreSQL", "Custom CSS"],
     image: "/projects/kares-studio.webp",
+    liveUrl: "https://kares-studio.vercel.app",
     sourceUrl: "https://github.com/daffaabdulfatah/Kares-Studio",
     featured: true
   }
