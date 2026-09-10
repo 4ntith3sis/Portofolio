@@ -8,7 +8,7 @@ export const projects = [
     technologies: ["Next.js", "React", "Tailwind CSS", "Express.js", "PostgreSQL"],
     image: "/projects/edgar-space.webp",
     liveUrl: "https://edgar-space.vercel.app/",
-    sourceUrl: "https://github.com/daffaabdulfatah/edgar-space",
+    sourceUrl: "https://github.com/4ntith3sis/edgar-space",
     featured: true
   },
   {
@@ -19,7 +19,7 @@ export const projects = [
     description: "A modern artificial flower store management system for Nuna Florist, featuring product management, category management, flexible product specifications, inventory tracking, and an administrative dashboard.",
     technologies: ["Next.js", "Tailwind CSS", "Express.js", "Prisma", "PostgreSQL"],
     image: "/projects/nuna-florist.webp",
-    sourceUrl: "https://github.com/daffaabdulfatah/Nuna-Florist",
+    sourceUrl: "https://github.com/4ntith3sis/Nuna-Florist",
     featured: true
   },
   {
@@ -31,7 +31,7 @@ export const projects = [
     technologies: ["Next.js 14", "React 18", "TypeScript 5", "Supabase", "PostgreSQL", "Custom CSS"],
     image: "/projects/kares-studio.webp",
     liveUrl: "https://kares-studio.vercel.app",
-    sourceUrl: "https://github.com/daffaabdulfatah/Kares-Studio",
+    sourceUrl: "https://github.com/4ntith3sis/Kares-Studio",
     featured: true
   }
 ];

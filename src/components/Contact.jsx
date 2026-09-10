@@ -13,8 +13,8 @@ export default function Contact() {
     },
     {
       name: "GITHUB",
-      value: "github.com/daffaabdulfatah",
-      href: "https://github.com/daffaabdulfatah",
+      value: "github.com/4ntith3sis",
+      href: "https://github.com/4ntith3sis",
       icon: Github,
     },
     {
