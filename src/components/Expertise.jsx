@@ -5,7 +5,7 @@ import { skillCategories } from "@/data/skills";
 
 export default function Expertise() {
   return (
-    <section id="expertise" className="py-24 border-b border-border">
+    <section id="expertise" className="py-16 sm:py-24 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Tag */}
         <motion.div
@@ -13,7 +13,7 @@ export default function Expertise() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
+          className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
           <span>03 / EXPERTISE</span>
           <span>TECHNICAL CAPABILITIES</span>
@@ -25,7 +25,7 @@ export default function Expertise() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-foreground mb-16 max-w-2xl"
+          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-foreground mb-8 sm:mb-16 max-w-2xl"
         >
           TECHNICAL TOOLKIT & DISCIPLINARY STACK
         </motion.h2>

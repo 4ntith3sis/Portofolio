@@ -13,17 +13,6 @@ export const projects = [
   },
   {
     number: "02",
-    slug: "Nuna Florist",
-    title: "Nuna Florist",
-    subtitle: "Artificial Flower Store & Inventory Management System",
-    description: "A modern artificial flower store management system for Nuna Florist, featuring product management, category management, flexible product specifications, inventory tracking, and an administrative dashboard.",
-    technologies: ["Next.js", "Tailwind CSS", "Express.js", "Prisma", "PostgreSQL"],
-    image: "/projects/nuna-florist.webp",
-    sourceUrl: "https://github.com/4ntith3sis/Nuna-Florist",
-    featured: true
-  },
-  {
-    number: "03",
     slug: "Kares Studio",
     title: "Kares Studio",
     subtitle: "High-Fashion Showcase & E-commerce Platform",
@@ -32,6 +21,17 @@ export const projects = [
     image: "/projects/kares-studio.webp",
     liveUrl: "https://kares-studio.vercel.app",
     sourceUrl: "https://github.com/4ntith3sis/Kares-Studio",
+    featured: true
+  },
+  {
+    number: "03",
+    slug: "Nuna Florist",
+    title: "Nuna Florist",
+    subtitle: "Artificial Flower Store & Inventory Management System",
+    description: "A modern artificial flower store management system for Nuna Florist, featuring product management, category management, flexible product specifications, inventory tracking, and an administrative dashboard.",
+    technologies: ["Next.js", "Tailwind CSS", "Express.js", "Prisma", "PostgreSQL"],
+    image: "/projects/nuna-florist.webp",
+    sourceUrl: "https://github.com/4ntith3sis/Nuna-Florist",
     featured: true
   }
 ];

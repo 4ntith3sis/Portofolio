@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function About() {
   return (
-    <section id="about" className="py-24 border-b border-border">
+    <section id="about" className="py-16 sm:py-24 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Tag */}
         <motion.div
@@ -12,14 +12,14 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
+          className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
           <span>02 / ABOUT</span>
           <span>FOCUS & INTEREST</span>
         </motion.div>
 
         {/* Editorial Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Main Statement */}
           <motion.div
             initial={{ opacity: 0, y: 35 }}

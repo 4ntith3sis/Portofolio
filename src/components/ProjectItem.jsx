@@ -7,32 +7,53 @@ import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
 
 const IFRAME_WIDTH = 1280;
 const IFRAME_HEIGHT = 800;
+const MOBILE_IFRAME_WIDTH = 390;  // real mobile viewport width
+const MOBILE_IFRAME_HEIGHT = 844; // real mobile viewport height (iPhone 14)
 
 export default function ProjectItem({ project, index }) {
   const hasLiveUrl = project.liveUrl && project.liveUrl.trim() !== "";
   const hasSourceUrl = project.sourceUrl && project.sourceUrl.trim() !== "";
   const targetUrl = project.liveUrl || project.sourceUrl;
 
+  const isMobile = project.mobilePreview === true;
+
+  // Desktop preview scale
   const previewRef = useRef(null);
   const [iframeScale, setIframeScale] = useState(0.35);
 
-  useEffect(() => {
-    if (!hasLiveUrl || !previewRef.current) return;
+  // Mobile preview scale
+  const mobileContainerRef = useRef(null);
+  const [mobileScale, setMobileScale] = useState(1);
 
+  // Desktop scale effect
+  useEffect(() => {
+    if (!hasLiveUrl || isMobile || !previewRef.current) return;
     const updateScale = () => {
       if (previewRef.current) {
-        const containerWidth = previewRef.current.offsetWidth;
-        setIframeScale(containerWidth / IFRAME_WIDTH);
+        setIframeScale(previewRef.current.offsetWidth / IFRAME_WIDTH);
       }
     };
-
     updateScale();
-
     const observer = new ResizeObserver(updateScale);
     observer.observe(previewRef.current);
-
     return () => observer.disconnect();
-  }, [hasLiveUrl]);
+  }, [hasLiveUrl, isMobile]);
+
+  // Mobile scale effect — fit full MOBILE_IFRAME_WIDTH×MOBILE_IFRAME_HEIGHT into the container
+  // Portrait container aspect ratio = MOBILE_IFRAME_WIDTH/MOBILE_IFRAME_HEIGHT so scaleX===scaleY, no gaps
+  useEffect(() => {
+    if (!hasLiveUrl || !isMobile || !mobileContainerRef.current) return;
+    const updateMobileScale = () => {
+      const el = mobileContainerRef.current;
+      if (!el) return;
+      const s = el.offsetWidth / MOBILE_IFRAME_WIDTH;
+      setMobileScale(s);
+    };
+    updateMobileScale();
+    const observer = new ResizeObserver(updateMobileScale);
+    observer.observe(mobileContainerRef.current);
+    return () => observer.disconnect();
+  }, [hasLiveUrl, isMobile]);
 
   return (
     <motion.article
@@ -40,7 +61,7 @@ export default function ProjectItem({ project, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: false, amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="border-b border-border py-12 lg:py-16 group transition-colors hover:bg-background/60"
+      className="border-b border-border py-8 sm:py-12 lg:py-16 group transition-colors hover:bg-background/60"
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column: Details (7 cols) */}
@@ -54,7 +75,7 @@ export default function ProjectItem({ project, index }) {
             </div>
 
             {/* Title with hover arrow animation */}
-            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase text-foreground tracking-tight mb-4 group-hover:translate-x-2 transition-transform duration-300">
+            <h3 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold uppercase text-foreground tracking-tight mb-4 lg:group-hover:translate-x-2 transition-transform duration-300">
               {targetUrl ? (
                 <a
                   href={targetUrl}
@@ -88,7 +109,7 @@ export default function ProjectItem({ project, index }) {
           </div>
 
           {/* Action Links */}
-          <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-border/40 font-mono text-xs tracking-widest uppercase">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-4 border-t border-border/40 font-mono text-xs tracking-widest uppercase">
             {hasLiveUrl ? (
               <a
                 href={project.liveUrl}
@@ -124,6 +145,66 @@ export default function ProjectItem({ project, index }) {
         {/* Right Column: Live Web Preview / Image Reveal (5 cols) */}
         <div className="lg:col-span-5 relative mt-6 lg:mt-0">
           {hasLiveUrl ? (
+            isMobile ? (
+              /* ── Mobile Preview — height matches 16/10, width auto from 9/16 ── */
+              <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
+                {/* Absolute fill: centers the portrait frame */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Portrait frame: height=100%, width=height*(9/16) */}
+                  <div
+                    className="h-full flex flex-col border border-border bg-background shadow-2xl overflow-hidden"
+                    style={{ aspectRatio: `${MOBILE_IFRAME_WIDTH}/${MOBILE_IFRAME_HEIGHT}` }}
+                  >
+                    {/* URL Bar */}
+                    <div className="flex-shrink-0 flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                      </div>
+                      <div className="flex items-center gap-1 bg-background px-2 py-0.5 border border-border text-secondary truncate max-w-[80px]">
+                        <span className="text-accent font-semibold text-[9px]">https://</span>
+                        <span className="truncate text-[9px]">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                      </div>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-secondary hover:text-accent transition-colors"
+                        title="Open in new tab"
+                      >
+                        <ExternalLink size={11} />
+                      </a>
+                    </div>
+                    {/* iframe area — proportional scale-to-fit */}
+                    <div
+                      ref={mobileContainerRef}
+                      className="relative flex-1 overflow-hidden bg-white"
+                    >
+                      <iframe
+                        src={project.liveUrl}
+                        title={`${project.title} Live Preview`}
+                        loading="lazy"
+                        scrolling="no"
+                        style={{
+                          width: `${MOBILE_IFRAME_WIDTH}px`,
+                          height: `${MOBILE_IFRAME_HEIGHT}px`,
+                          border: 'none',
+                          background: 'white',
+                          transform: `scale(${mobileScale})`,
+                          transformOrigin: 'top left',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+            /* ── Desktop Browser Preview ── */
             <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
               {/* Browser Header Bar */}
               <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
@@ -171,6 +252,7 @@ export default function ProjectItem({ project, index }) {
                 />
               </div>
             </div>
+            )
           ) : targetUrl ? (
             <a
               href={targetUrl}

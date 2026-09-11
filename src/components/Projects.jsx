@@ -6,7 +6,7 @@ import ProjectItem from "./ProjectItem";
 
 export default function Projects() {
   return (
-    <section id="work" className="py-24 border-b border-border">
+    <section id="work" className="py-16 sm:py-24 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Tag */}
         <motion.div
@@ -14,7 +14,7 @@ export default function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
+          className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
           <span>04 / SELECTED WORK</span>
           <span>CURATED DIGITAL PROJECTS</span>
@@ -26,7 +26,7 @@ export default function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-border"
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 pb-6 border-b border-border"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-foreground">
             FEATURED PROJECTS

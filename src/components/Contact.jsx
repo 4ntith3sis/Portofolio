@@ -57,7 +57,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 border-b border-border">
+    <section id="contact" className="py-16 sm:py-24 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Tag */}
         <motion.div
@@ -65,7 +65,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="flex items-center justify-between border-b border-border pb-4 mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
+          className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
           <span>06 / CONTACT</span>
           <span>GET IN TOUCH</span>
@@ -79,7 +79,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 flex flex-col justify-between"
+            className="lg:col-span-7 flex flex-col justify-between gap-8"
           >
             <div>
               <h2 className="editorial-title font-extrabold uppercase text-foreground tracking-tight mb-8">
@@ -99,7 +99,7 @@ export default function Contact() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-5 font-mono text-sm font-bold tracking-widest uppercase hover:bg-accent hover:text-white transition-colors self-start group shadow-sm"
+              className="inline-flex items-center gap-3 bg-foreground text-background px-6 py-4 sm:px-8 sm:py-5 font-mono text-sm font-bold tracking-widest uppercase hover:bg-accent hover:text-white transition-colors self-start group shadow-sm"
             >
               <span>GET IN TOUCH</span>
               <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />

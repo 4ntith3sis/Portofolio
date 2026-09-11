@@ -13,11 +13,16 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
     background-color: var(--background);
     color: var(--foreground);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    overflow-x: hidden;
   }
 
   ::selection {
@@ -34,14 +39,14 @@
 
 /* Hero Heading Fluid Typography Clamp */
 .hero-heading {
-  font-size: clamp(3.5rem, 10.5vw, 11rem);
-  line-height: 0.9;
+  font-size: clamp(2rem, 10.5vw, 11rem);
+  line-height: 0.92;
   letter-spacing: -0.04em;
 }
 
 /* Editorial Title Typography */
 .editorial-title {
-  font-size: clamp(2.25rem, 6vw, 5rem);
+  font-size: clamp(2rem, 6vw, 5rem);
   line-height: 1.05;
   letter-spacing: -0.03em;
 }

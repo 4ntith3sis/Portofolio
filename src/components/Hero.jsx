@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section
       id="intro"
-      className="pt-12 pb-24 border-b border-border min-h-[90vh] flex flex-col justify-between relative"
+      className="pt-8 sm:pt-12 pb-16 sm:pb-24 border-b border-border min-h-[90vh] flex flex-col justify-between relative"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Section Identifier */}
@@ -18,14 +18,14 @@ export default function Hero() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center justify-between border-b border-border pb-4 mb-12 font-mono text-xs text-secondary tracking-widest uppercase"
+          className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-12 font-mono text-xs text-secondary tracking-widest uppercase"
         >
           <span>01 / INTRO</span>
           <span>DEVELOPER PORTOFOLIO</span>
         </motion.div>
 
         {/* 12-Column Desktop Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-start">
           {/* 7 Columns: Typography & Info */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -113,7 +113,7 @@ export default function Hero() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="mt-16 pt-8 border-t border-border flex items-center justify-between"
+          className="mt-8 sm:mt-16 pt-8 border-t border-border flex items-center justify-between"
         >
           <a
             href="#about"
