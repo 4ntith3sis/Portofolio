@@ -22,5 +22,18 @@ export const projects = [
     liveUrl: "https://kares-studio.vercel.app",
     sourceUrl: "https://github.com/4ntith3sis/Kares-Studio",
     featured: true
+  },
+  {
+    number: "03",
+    slug: "When the Colors Fade Away",
+    title: "When the Colors Fade Away",
+    subtitle: "Cinematic Scroll-Driven Storytelling Experience",
+    description: "An interactive, cinematic scroll-driven visual novel web experience exploring memory, distance, connection, and impermanence. Features smooth inertia scrolling, hand-crafted SVG character silhouettes, dynamic monochromatic visual transitions, and generative atmospheric soundscapes.",
+    technologies: ["React", "Vite", "GSAP 3", "Lenis Scroll", "Web Audio API", "Lucide React"],
+    image: "/projects/when-the-colors-fade-away.webp",
+    liveUrl: "https://when-the-colors-fade-away.vercel.app/",
+    sourceUrl: "https://github.com/4ntith3sis/when-the-colors-fade-away",
+    featured: true
   }
 ];
+
