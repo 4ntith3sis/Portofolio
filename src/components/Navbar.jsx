@@ -19,7 +19,7 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      const sections = ["intro", "about", "expertise", "work", "education", "contact"];
+      const sections = ["intro", "about", "expertise", "work", "mini-projects", "education", "contact"];
       const scrollPosition = window.scrollY + 200;
 
       for (const sectionId of sections) {

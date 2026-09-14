@@ -15,7 +15,7 @@ export default function Education() {
           transition={{ duration: 0.5 }}
           className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
-          <span>05 / EDUCATION</span>
+          <span>06 / EDUCATION</span>
           <span>ACADEMIC BACKGROUND</span>
         </motion.div>
 

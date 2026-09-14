@@ -67,7 +67,7 @@ export default function Contact() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
-          <span>06 / CONTACT</span>
+          <span>07 / CONTACT</span>
           <span>GET IN TOUCH</span>
         </motion.div>
 

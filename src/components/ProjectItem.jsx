@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
 
@@ -39,8 +38,7 @@ export default function ProjectItem({ project, index }) {
     return () => observer.disconnect();
   }, [hasLiveUrl, isMobile]);
 
-  // Mobile scale effect — fit full MOBILE_IFRAME_WIDTH×MOBILE_IFRAME_HEIGHT into the container
-  // Portrait container aspect ratio = MOBILE_IFRAME_WIDTH/MOBILE_IFRAME_HEIGHT so scaleX===scaleY, no gaps
+  // Mobile scale effect
   useEffect(() => {
     if (!hasLiveUrl || !isMobile || !mobileContainerRef.current) return;
     const updateMobileScale = () => {
@@ -142,15 +140,13 @@ export default function ProjectItem({ project, index }) {
           </div>
         </div>
 
-        {/* Right Column: Live Web Preview / Image Reveal (5 cols) */}
+        {/* Right Column: Live Web Preview (5 cols) */}
         <div className="lg:col-span-5 relative mt-6 lg:mt-0">
           {hasLiveUrl ? (
             isMobile ? (
-              /* ── Mobile Preview — height matches 16/10, width auto from 9/16 ── */
+              /* Mobile Preview */
               <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
-                {/* Absolute fill: centers the portrait frame */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {/* Portrait frame: height=100%, width=height*(9/16) */}
                   <div
                     className="h-full flex flex-col border border-border bg-background shadow-2xl overflow-hidden"
                     style={{ aspectRatio: `${MOBILE_IFRAME_WIDTH}/${MOBILE_IFRAME_HEIGHT}` }}
@@ -176,7 +172,7 @@ export default function ProjectItem({ project, index }) {
                         <ExternalLink size={11} />
                       </a>
                     </div>
-                    {/* iframe area — proportional scale-to-fit */}
+                    {/* iframe area */}
                     <div
                       ref={mobileContainerRef}
                       className="relative flex-1 overflow-hidden bg-white"
@@ -204,87 +200,59 @@ export default function ProjectItem({ project, index }) {
                 </div>
               </div>
             ) : (
-            /* ── Desktop Browser Preview ── */
-            <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
-              {/* Browser Header Bar */}
-              <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+              /* Desktop Browser Preview */
+              <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
+                {/* Browser Header Bar */}
+                <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
+                    <span className="text-accent font-semibold">https://</span>
+                    <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                  </div>
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
+                    title="Open in new tab"
+                  >
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
-                <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
-                  <span className="text-accent font-semibold">https://</span>
-                  <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-                </div>
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
-                  title="Open in new tab"
-                >
-                  <ExternalLink size={12} />
-                </a>
-              </div>
 
-              {/* Live Web Preview Frame - Full desktop view scaled down */}
-              <div
-                ref={previewRef}
-                className="relative w-full flex-1 bg-background overflow-hidden"
-              >
-                <iframe
-                  src={project.liveUrl}
-                  title={`${project.title} Live Preview`}
-                  loading="lazy"
-                  style={{
-                    width: `${IFRAME_WIDTH}px`,
-                    height: `${IFRAME_HEIGHT}px`,
-                    border: 'none',
-                    background: 'white',
-                    transform: `scale(${iframeScale})`,
-                    transformOrigin: 'top left',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    pointerEvents: 'none',
-                  }}
-                />
+                {/* Live Web Preview Frame */}
+                <div
+                  ref={previewRef}
+                  className="relative w-full flex-1 bg-background overflow-hidden"
+                >
+                  <iframe
+                    src={project.liveUrl}
+                    title={`${project.title} Live Preview`}
+                    loading="lazy"
+                    style={{
+                      width: `${IFRAME_WIDTH}px`,
+                      height: `${IFRAME_HEIGHT}px`,
+                      border: 'none',
+                      background: 'white',
+                      transform: `scale(${iframeScale})`,
+                      transformOrigin: 'top left',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      pointerEvents: 'none',
+                    }}
+                  />
+                </div>
               </div>
-            </div>
             )
-          ) : targetUrl ? (
-            <a
-              href={targetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block relative aspect-[16/10] w-full overflow-hidden border border-border bg-border/30 group-hover:border-accent/60 transition-colors duration-300 cursor-pointer"
-            >
-              <Image
-                src={project.image}
-                alt={`${project.title} — ${project.subtitle}`}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 40vw"
-                className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
-              />
-              {/* Image Overlay Label */}
-              <div className="absolute bottom-3 left-3 bg-background/95 backdrop-blur-sm border border-border px-3 py-1 font-mono text-[10px] tracking-widest text-foreground uppercase">
-                {project.slug}
-              </div>
-            </a>
           ) : (
-            <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-border/30 group-hover:border-accent/60 transition-colors duration-300">
-              <Image
-                src={project.image}
-                alt={`${project.title} — ${project.subtitle}`}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 40vw"
-                className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
-              />
-              {/* Image Overlay Label */}
-              <div className="absolute bottom-3 left-3 bg-background/95 backdrop-blur-sm border border-border px-3 py-1 font-mono text-[10px] tracking-widest text-foreground uppercase">
-                {project.slug}
-              </div>
+            <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono">
+              <span className="text-accent font-bold text-xs tracking-widest uppercase mb-2">{"// LIVE PREVIEW UNAVAILABLE"}</span>
+              <span className="text-foreground text-sm font-bold uppercase tracking-wider">{project.title}</span>
             </div>
           )}
         </div>
