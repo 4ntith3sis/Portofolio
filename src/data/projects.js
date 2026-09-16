@@ -20,5 +20,16 @@ export const projects = [
     liveUrl: "https://kares-studio.vercel.app",
     sourceUrl: "https://github.com/4ntith3sis/Kares-Studio",
     featured: true
+  },
+  {
+    number: "03",
+    slug: "LILLO KEY ACCESSORIES",
+    title: "LILLO — Key Accessories",
+    subtitle: "KEY ACCESSORIES CATALOG & E-COMMERCE",
+    description: "LILLO adalah aplikasi katalog dan e-commerce aksesori gantungan kunci berbasis web, dibangun dengan arsitektur fullstack modern menggunakan Next.js, Express.js, dan Appwrite yang berjalan dalam satu project Vercel.",
+    technologies: ["Next.js", "React", "TypeScript", "Vanilla CSS", "Express.js", "Node.js", "Appwrite", "Vercel"],
+    liveUrl: "https://lillo-key-accessories.vercel.app/",
+    sourceUrl: "https://github.com/4ntith3sis/lillo-key-accessories",
+    featured: true
   }
 ];
