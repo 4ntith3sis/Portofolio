@@ -26,7 +26,7 @@ export const projects = [
     slug: "LILLO KEY ACCESSORIES",
     title: "LILLO — Key Accessories",
     subtitle: "KEY ACCESSORIES CATALOG & E-COMMERCE",
-    description: "LILLO adalah aplikasi katalog dan e-commerce aksesori gantungan kunci berbasis web, dibangun dengan arsitektur fullstack modern menggunakan Next.js, Express.js, dan Appwrite yang berjalan dalam satu project Vercel.",
+    description: "LILLO is a web-based catalog and e-commerce platform for key accessories, built with a modern full-stack architecture using Next.js, Express.js, and Appwrite within a unified application.",
     technologies: ["Next.js", "React", "TypeScript", "Vanilla CSS", "Express.js", "Node.js", "Appwrite"],
     liveUrl: "https://lillo-key-accessories.vercel.app/",
     sourceUrl: "https://github.com/4ntith3sis/lillo-key-accessories",
