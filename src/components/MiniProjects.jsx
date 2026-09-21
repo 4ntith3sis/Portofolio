@@ -7,26 +7,37 @@ import { ArrowUpRight, ExternalLink } from "lucide-react";
 
 const IFRAME_WIDTH = 1280;
 const IFRAME_HEIGHT = 800;
+const MOBILE_IFRAME_WIDTH = 390;
+const MOBILE_IFRAME_HEIGHT = 844;
 
 function MiniProjectFrame({ project }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.35);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   const isLiveWeb = project.liveUrl && (project.liveUrl.startsWith("http://") || project.liveUrl.startsWith("https://"));
 
   useEffect(() => {
     if (!isLiveWeb || !containerRef.current) return;
-    const updateScale = () => {
+
+    const updateScaleAndViewport = () => {
       if (containerRef.current) {
-        const newScale = containerRef.current.offsetWidth / IFRAME_WIDTH;
+        const isMobile = window.innerWidth <= 768;
+        setIsMobileViewport(isMobile);
+        const targetWidth = isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
+        const newScale = containerRef.current.offsetWidth / targetWidth;
         setScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
       }
     };
-    updateScale();
-    const observer = new ResizeObserver(updateScale);
+
+    updateScaleAndViewport();
+    const observer = new ResizeObserver(updateScaleAndViewport);
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [isLiveWeb]);
+
+  const targetWidth = isMobileViewport ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
+  const targetHeight = isMobileViewport ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT;
 
   return (
     <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-md flex flex-col mb-6 group/frame transition-colors hover:border-accent/60">
@@ -75,8 +86,8 @@ function MiniProjectFrame({ project }) {
             title={`${project.title} Live Interface`}
             loading="lazy"
             style={{
-              width: `${IFRAME_WIDTH}px`,
-              height: `${IFRAME_HEIGHT}px`,
+              width: `${targetWidth}px`,
+              height: `${targetHeight}px`,
               border: 'none',
               background: 'white',
               transform: `scale(${scale})`,
