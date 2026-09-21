@@ -16,21 +16,31 @@ export default function ProjectItem({ project, index }) {
 
   const isMobile = project.mobilePreview === true;
 
-  // Preview scale ref & state
+  // Preview scale & height state
   const previewRef = useRef(null);
   const [iframeScale, setIframeScale] = useState(0.35);
+  const [iframeHeight, setIframeHeight] = useState(800);
 
   useEffect(() => {
     if (!hasLiveUrl || !previewRef.current) return;
     const targetWidth = isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
-    const updateScale = () => {
+    const defaultHeight = isMobile ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT;
+
+    const updateDimensions = () => {
       if (previewRef.current) {
-        const newScale = previewRef.current.offsetWidth / targetWidth;
-        setIframeScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
+        const containerW = previewRef.current.offsetWidth;
+        const containerH = previewRef.current.offsetHeight;
+        if (containerW > 0 && targetWidth > 0) {
+          const newScale = containerW / targetWidth;
+          const calculatedH = containerH > 0 ? Math.round(containerH / newScale) : defaultHeight;
+
+          setIframeScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
+          setIframeHeight((prev) => (Math.abs(prev - calculatedH) > 2 ? calculatedH : prev));
+        }
       }
     };
-    updateScale();
-    const observer = new ResizeObserver(updateScale);
+    updateDimensions();
+    const observer = new ResizeObserver(updateDimensions);
     observer.observe(previewRef.current);
     return () => observer.disconnect();
   }, [hasLiveUrl, isMobile]);
@@ -165,7 +175,7 @@ export default function ProjectItem({ project, index }) {
                   loading="lazy"
                   style={{
                     width: `${isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH}px`,
-                    height: `${isMobile ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT}px`,
+                    height: `${iframeHeight}px`,
                     border: 'none',
                     background: 'white',
                     transform: `scale(${iframeScale})`,

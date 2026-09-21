@@ -13,6 +13,7 @@ const MOBILE_IFRAME_HEIGHT = 844;
 function MiniProjectFrame({ project }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.35);
+  const [iframeHeight, setIframeHeight] = useState(800);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   const isLiveWeb = project.liveUrl && (project.liveUrl.startsWith("http://") || project.liveUrl.startsWith("https://"));
@@ -20,24 +21,31 @@ function MiniProjectFrame({ project }) {
   useEffect(() => {
     if (!isLiveWeb || !containerRef.current) return;
 
-    const updateScaleAndViewport = () => {
+    const updateDimensions = () => {
       if (containerRef.current) {
+        const containerW = containerRef.current.offsetWidth;
+        const containerH = containerRef.current.offsetHeight;
         const isMobile = window.innerWidth <= 768;
         setIsMobileViewport(isMobile);
+
         const targetWidth = isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
-        const newScale = containerRef.current.offsetWidth / targetWidth;
-        setScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
+        if (containerW > 0 && targetWidth > 0) {
+          const newScale = containerW / targetWidth;
+          const calculatedH = containerH > 0 ? Math.round(containerH / newScale) : (isMobile ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT);
+
+          setScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
+          setIframeHeight((prev) => (Math.abs(prev - calculatedH) > 2 ? calculatedH : prev));
+        }
       }
     };
 
-    updateScaleAndViewport();
-    const observer = new ResizeObserver(updateScaleAndViewport);
+    updateDimensions();
+    const observer = new ResizeObserver(updateDimensions);
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [isLiveWeb]);
 
   const targetWidth = isMobileViewport ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
-  const targetHeight = isMobileViewport ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT;
 
   return (
     <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-md flex flex-col mb-6 group/frame transition-colors hover:border-accent/60">
@@ -87,7 +95,7 @@ function MiniProjectFrame({ project }) {
             loading="lazy"
             style={{
               width: `${targetWidth}px`,
-              height: `${targetHeight}px`,
+              height: `${iframeHeight}px`,
               border: 'none',
               background: 'white',
               transform: `scale(${scale})`,
