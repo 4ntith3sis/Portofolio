@@ -9,69 +9,31 @@ const IFRAME_HEIGHT = 800;
 const MOBILE_IFRAME_WIDTH = 390;  // real mobile viewport width
 const MOBILE_IFRAME_HEIGHT = 844; // real mobile viewport height (iPhone 14)
 
-function useIsTouchDevice() {
-  const [isTouch, setIsTouch] = useState(false);
-
-  useEffect(() => {
-    const checkTouch = () => {
-      if (typeof window === "undefined") return;
-      const isCoarse = window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-      const isMobileWidth = window.innerWidth <= 768;
-      const hasTouch = "ontouchstart" in window || (navigator && navigator.maxTouchPoints > 0);
-      setIsTouch(isCoarse || (isMobileWidth && hasTouch));
-    };
-    checkTouch();
-    window.addEventListener("resize", checkTouch);
-    return () => window.removeEventListener("resize", checkTouch);
-  }, []);
-
-  return isTouch;
-}
-
 export default function ProjectItem({ project, index }) {
   const hasLiveUrl = project.liveUrl && project.liveUrl.trim() !== "";
   const hasSourceUrl = project.sourceUrl && project.sourceUrl.trim() !== "";
   const targetUrl = project.liveUrl || project.sourceUrl;
 
   const isMobile = project.mobilePreview === true;
-  const isTouchDevice = useIsTouchDevice();
 
-  // Desktop preview scale
+  // Preview scale ref & state
   const previewRef = useRef(null);
   const [iframeScale, setIframeScale] = useState(0.35);
 
-  // Mobile preview scale
-  const mobileContainerRef = useRef(null);
-  const [mobileScale, setMobileScale] = useState(1);
-
-  // Desktop scale effect
   useEffect(() => {
-    if (!hasLiveUrl || isMobile || isTouchDevice || !previewRef.current) return;
+    if (!hasLiveUrl || !previewRef.current) return;
+    const targetWidth = isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
     const updateScale = () => {
       if (previewRef.current) {
-        setIframeScale(previewRef.current.offsetWidth / IFRAME_WIDTH);
+        const newScale = previewRef.current.offsetWidth / targetWidth;
+        setIframeScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
       }
     };
     updateScale();
     const observer = new ResizeObserver(updateScale);
     observer.observe(previewRef.current);
     return () => observer.disconnect();
-  }, [hasLiveUrl, isMobile, isTouchDevice]);
-
-  // Mobile scale effect
-  useEffect(() => {
-    if (!hasLiveUrl || !isMobile || isTouchDevice || !mobileContainerRef.current) return;
-    const updateMobileScale = () => {
-      const el = mobileContainerRef.current;
-      if (!el) return;
-      const s = el.offsetWidth / MOBILE_IFRAME_WIDTH;
-      setMobileScale(s);
-    };
-    updateMobileScale();
-    const observer = new ResizeObserver(updateMobileScale);
-    observer.observe(mobileContainerRef.current);
-    return () => observer.disconnect();
-  }, [hasLiveUrl, isMobile, isTouchDevice]);
+  }, [hasLiveUrl, isMobile]);
 
   return (
     <motion.article
@@ -163,153 +125,60 @@ export default function ProjectItem({ project, index }) {
         {/* Right Column: Live Web Preview (5 cols) */}
         <div className="lg:col-span-5 relative mt-6 lg:mt-0">
           {hasLiveUrl ? (
-            isTouchDevice ? (
-              /* Mobile Touch Device direct full page preview card */
-              <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
-                <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                  </div>
-                  <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
-                    <span className="text-accent font-semibold">https://</span>
-                    <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-                  </div>
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
-                    title="Open in new tab"
-                  >
-                    <ExternalLink size={12} />
-                  </a>
+            <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
+              {/* Browser Header Bar */}
+              <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                </div>
+                <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
+                  <span className="text-accent font-semibold">https://</span>
+                  <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                 </div>
                 <a
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative w-full flex-1 bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono group/banner transition-colors hover:bg-border/30"
+                  className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
+                  title="Open in new tab"
                 >
-                  <span className="text-accent font-bold text-xs tracking-widest uppercase mb-1 flex items-center gap-1">
-                    <span>{"// LIVE PROJECT PREVIEW"}</span>
-                    <ArrowUpRight size={12} />
-                  </span>
-                  <span className="text-foreground text-sm font-bold uppercase tracking-wider group-hover/banner:text-accent transition-colors">
-                    {project.title}
-                  </span>
-                  <span className="text-secondary/80 text-[10px] tracking-wider uppercase mt-2 border border-border/80 px-3 py-1 bg-background/80 group-hover/banner:border-accent/60 transition-colors">
-                    TAP TO OPEN FULL PAGE ↗
-                  </span>
+                  <ExternalLink size={12} />
                 </a>
               </div>
-            ) : isMobile ? (
-              /* Mobile Desktop Emulated Preview (Desktop viewports only) */
-              <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div
-                    className="h-full flex flex-col border border-border bg-background shadow-2xl overflow-hidden"
-                    style={{ aspectRatio: `${MOBILE_IFRAME_WIDTH}/${MOBILE_IFRAME_HEIGHT}` }}
-                  >
-                    {/* URL Bar */}
-                    <div className="flex-shrink-0 flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
-                        <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                        <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                      </div>
-                      <div className="flex items-center gap-1 bg-background px-2 py-0.5 border border-border text-secondary truncate max-w-[80px]">
-                        <span className="text-accent font-semibold text-[9px]">https://</span>
-                        <span className="truncate text-[9px]">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-                      </div>
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-secondary hover:text-accent transition-colors"
-                        title="Open in new tab"
-                      >
-                        <ExternalLink size={11} />
-                      </a>
-                    </div>
-                    {/* iframe area */}
-                    <div
-                      ref={mobileContainerRef}
-                      className="relative flex-1 overflow-hidden bg-white"
-                    >
-                      <iframe
-                        src={project.liveUrl}
-                        title={`${project.title} Live Preview`}
-                        loading="lazy"
-                        scrolling="no"
-                        style={{
-                          width: `${MOBILE_IFRAME_WIDTH}px`,
-                          height: `${MOBILE_IFRAME_HEIGHT}px`,
-                          border: 'none',
-                          background: 'white',
-                          transform: `scale(${mobileScale})`,
-                          transformOrigin: 'top left',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          pointerEvents: 'none',
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Desktop Browser Preview */
-              <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
-                {/* Browser Header Bar */}
-                <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                  </div>
-                  <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
-                    <span className="text-accent font-semibold">https://</span>
-                    <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-                  </div>
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
-                    title="Open in new tab"
-                  >
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
 
-                {/* Live Web Preview Frame */}
-                <div
-                  ref={previewRef}
-                  className="relative w-full flex-1 bg-background overflow-hidden"
-                >
-                  <iframe
-                    src={project.liveUrl}
-                    title={`${project.title} Live Preview`}
-                    loading="lazy"
-                    style={{
-                      width: `${IFRAME_WIDTH}px`,
-                      height: `${IFRAME_HEIGHT}px`,
-                      border: 'none',
-                      background: 'white',
-                      transform: `scale(${iframeScale})`,
-                      transformOrigin: 'top left',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      pointerEvents: 'none',
-                    }}
-                  />
-                </div>
+              {/* Live Web Preview Frame */}
+              <div
+                ref={previewRef}
+                data-live-preview="true"
+                data-lenis-prevent="true"
+                data-lenis-prevent-touch="true"
+                data-lenis-prevent-wheel="true"
+                className="relative w-full flex-1 bg-background overflow-hidden"
+                style={{ touchAction: 'auto', overscrollBehavior: 'contain' }}
+              >
+                <iframe
+                  key={project.liveUrl}
+                  src={project.liveUrl}
+                  title={`${project.title} Live Preview`}
+                  loading="lazy"
+                  style={{
+                    width: `${isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH}px`,
+                    height: `${isMobile ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT}px`,
+                    border: 'none',
+                    background: 'white',
+                    transform: `scale(${iframeScale})`,
+                    transformOrigin: 'top left',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    pointerEvents: 'auto',
+                    touchAction: 'auto',
+                  }}
+                />
               </div>
-            )
+            </div>
           ) : (
             <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono">
               <span className="text-accent font-bold text-xs tracking-widest uppercase mb-2">{"// LIVE PREVIEW UNAVAILABLE"}</span>
