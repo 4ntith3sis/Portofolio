@@ -7,45 +7,25 @@ import { ArrowUpRight, ExternalLink } from "lucide-react";
 
 const IFRAME_WIDTH = 1280;
 const IFRAME_HEIGHT = 800;
-const MOBILE_IFRAME_WIDTH = 390;
-const MOBILE_IFRAME_HEIGHT = 844;
 
 function MiniProjectFrame({ project }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.35);
-  const [iframeHeight, setIframeHeight] = useState(800);
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   const isLiveWeb = project.liveUrl && (project.liveUrl.startsWith("http://") || project.liveUrl.startsWith("https://"));
 
   useEffect(() => {
     if (!isLiveWeb || !containerRef.current) return;
-
-    const updateDimensions = () => {
+    const updateScale = () => {
       if (containerRef.current) {
-        const containerW = containerRef.current.offsetWidth;
-        const containerH = containerRef.current.offsetHeight;
-        const isMobile = window.innerWidth <= 768;
-        setIsMobileViewport(isMobile);
-
-        const targetWidth = isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
-        if (containerW > 0 && targetWidth > 0) {
-          const newScale = containerW / targetWidth;
-          const calculatedH = containerH > 0 ? Math.round(containerH / newScale) : (isMobile ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT);
-
-          setScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
-          setIframeHeight((prev) => (Math.abs(prev - calculatedH) > 2 ? calculatedH : prev));
-        }
+        setScale(containerRef.current.offsetWidth / IFRAME_WIDTH);
       }
     };
-
-    updateDimensions();
-    const observer = new ResizeObserver(updateDimensions);
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [isLiveWeb]);
-
-  const targetWidth = isMobileViewport ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
 
   return (
     <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-md flex flex-col mb-6 group/frame transition-colors hover:border-accent/60">
@@ -77,25 +57,19 @@ function MiniProjectFrame({ project }) {
         )}
       </div>
 
-      {/* Interface Area: Live Iframe Web Rendering with Isolated Touch Scrolling */}
+      {/* Interface Area: Pure Live Iframe Web Rendering */}
       <div
         ref={containerRef}
-        data-live-preview="true"
-        data-lenis-prevent="true"
-        data-lenis-prevent-touch="true"
-        data-lenis-prevent-wheel="true"
         className="relative w-full flex-1 bg-white overflow-hidden"
-        style={{ touchAction: 'auto', overscrollBehavior: 'contain' }}
       >
         {isLiveWeb ? (
           <iframe
-            key={project.liveUrl}
             src={project.liveUrl}
             title={`${project.title} Live Interface`}
             loading="lazy"
             style={{
-              width: `${targetWidth}px`,
-              height: `${iframeHeight}px`,
+              width: `${IFRAME_WIDTH}px`,
+              height: `${IFRAME_HEIGHT}px`,
               border: 'none',
               background: 'white',
               transform: `scale(${scale})`,
@@ -103,8 +77,7 @@ function MiniProjectFrame({ project }) {
               position: 'absolute',
               top: 0,
               left: 0,
-              pointerEvents: 'auto',
-              touchAction: 'auto',
+              pointerEvents: 'none',
             }}
           />
         ) : (

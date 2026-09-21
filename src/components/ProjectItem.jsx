@@ -16,32 +16,40 @@ export default function ProjectItem({ project, index }) {
 
   const isMobile = project.mobilePreview === true;
 
-  // Preview scale & height state
+  // Desktop preview scale
   const previewRef = useRef(null);
   const [iframeScale, setIframeScale] = useState(0.35);
-  const [iframeHeight, setIframeHeight] = useState(800);
 
+  // Mobile preview scale
+  const mobileContainerRef = useRef(null);
+  const [mobileScale, setMobileScale] = useState(1);
+
+  // Desktop scale effect
   useEffect(() => {
-    if (!hasLiveUrl || !previewRef.current) return;
-    const targetWidth = isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH;
-    const defaultHeight = isMobile ? MOBILE_IFRAME_HEIGHT : IFRAME_HEIGHT;
-
-    const updateDimensions = () => {
+    if (!hasLiveUrl || isMobile || !previewRef.current) return;
+    const updateScale = () => {
       if (previewRef.current) {
-        const containerW = previewRef.current.offsetWidth;
-        const containerH = previewRef.current.offsetHeight;
-        if (containerW > 0 && targetWidth > 0) {
-          const newScale = containerW / targetWidth;
-          const calculatedH = containerH > 0 ? Math.round(containerH / newScale) : defaultHeight;
-
-          setIframeScale((prev) => (Math.abs(prev - newScale) > 0.002 ? newScale : prev));
-          setIframeHeight((prev) => (Math.abs(prev - calculatedH) > 2 ? calculatedH : prev));
-        }
+        setIframeScale(previewRef.current.offsetWidth / IFRAME_WIDTH);
       }
     };
-    updateDimensions();
-    const observer = new ResizeObserver(updateDimensions);
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
     observer.observe(previewRef.current);
+    return () => observer.disconnect();
+  }, [hasLiveUrl, isMobile]);
+
+  // Mobile scale effect
+  useEffect(() => {
+    if (!hasLiveUrl || !isMobile || !mobileContainerRef.current) return;
+    const updateMobileScale = () => {
+      const el = mobileContainerRef.current;
+      if (!el) return;
+      const s = el.offsetWidth / MOBILE_IFRAME_WIDTH;
+      setMobileScale(s);
+    };
+    updateMobileScale();
+    const observer = new ResizeObserver(updateMobileScale);
+    observer.observe(mobileContainerRef.current);
     return () => observer.disconnect();
   }, [hasLiveUrl, isMobile]);
 
@@ -135,60 +143,112 @@ export default function ProjectItem({ project, index }) {
         {/* Right Column: Live Web Preview (5 cols) */}
         <div className="lg:col-span-5 relative mt-6 lg:mt-0">
           {hasLiveUrl ? (
-            <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
-              {/* Browser Header Bar */}
-              <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+            isMobile ? (
+              /* Mobile Preview */
+              <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div
+                    className="h-full flex flex-col border border-border bg-background shadow-2xl overflow-hidden"
+                    style={{ aspectRatio: `${MOBILE_IFRAME_WIDTH}/${MOBILE_IFRAME_HEIGHT}` }}
+                  >
+                    {/* URL Bar */}
+                    <div className="flex-shrink-0 flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                      </div>
+                      <div className="flex items-center gap-1 bg-background px-2 py-0.5 border border-border text-secondary truncate max-w-[80px]">
+                        <span className="text-accent font-semibold text-[9px]">https://</span>
+                        <span className="truncate text-[9px]">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                      </div>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-secondary hover:text-accent transition-colors"
+                        title="Open in new tab"
+                      >
+                        <ExternalLink size={11} />
+                      </a>
+                    </div>
+                    {/* iframe area */}
+                    <div
+                      ref={mobileContainerRef}
+                      className="relative flex-1 overflow-hidden bg-white"
+                    >
+                      <iframe
+                        src={project.liveUrl}
+                        title={`${project.title} Live Preview`}
+                        loading="lazy"
+                        scrolling="no"
+                        style={{
+                          width: `${MOBILE_IFRAME_WIDTH}px`,
+                          height: `${MOBILE_IFRAME_HEIGHT}px`,
+                          border: 'none',
+                          background: 'white',
+                          transform: `scale(${mobileScale})`,
+                          transformOrigin: 'top left',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
-                  <span className="text-accent font-semibold">https://</span>
-                  <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-                </div>
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
-                  title="Open in new tab"
-                >
-                  <ExternalLink size={12} />
-                </a>
               </div>
+            ) : (
+              /* Desktop Browser Preview */
+              <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
+                {/* Browser Header Bar */}
+                <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
+                    <span className="text-accent font-semibold">https://</span>
+                    <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                  </div>
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
+                    title="Open in new tab"
+                  >
+                    <ExternalLink size={12} />
+                  </a>
+                </div>
 
-              {/* Live Web Preview Frame */}
-              <div
-                ref={previewRef}
-                data-live-preview="true"
-                data-lenis-prevent="true"
-                data-lenis-prevent-touch="true"
-                data-lenis-prevent-wheel="true"
-                className="relative w-full flex-1 bg-background overflow-hidden"
-                style={{ touchAction: 'auto', overscrollBehavior: 'contain' }}
-              >
-                <iframe
-                  key={project.liveUrl}
-                  src={project.liveUrl}
-                  title={`${project.title} Live Preview`}
-                  loading="lazy"
-                  style={{
-                    width: `${isMobile ? MOBILE_IFRAME_WIDTH : IFRAME_WIDTH}px`,
-                    height: `${iframeHeight}px`,
-                    border: 'none',
-                    background: 'white',
-                    transform: `scale(${iframeScale})`,
-                    transformOrigin: 'top left',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    pointerEvents: 'auto',
-                    touchAction: 'auto',
-                  }}
-                />
+                {/* Live Web Preview Frame */}
+                <div
+                  ref={previewRef}
+                  className="relative w-full flex-1 bg-background overflow-hidden"
+                >
+                  <iframe
+                    src={project.liveUrl}
+                    title={`${project.title} Live Preview`}
+                    loading="lazy"
+                    style={{
+                      width: `${IFRAME_WIDTH}px`,
+                      height: `${IFRAME_HEIGHT}px`,
+                      border: 'none',
+                      background: 'white',
+                      transform: `scale(${iframeScale})`,
+                      transformOrigin: 'top left',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      pointerEvents: 'none',
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            )
           ) : (
             <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono">
               <span className="text-accent font-bold text-xs tracking-widest uppercase mb-2">{"// LIVE PREVIEW UNAVAILABLE"}</span>
