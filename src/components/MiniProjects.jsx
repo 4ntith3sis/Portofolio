@@ -8,14 +8,34 @@ import { ArrowUpRight, ExternalLink } from "lucide-react";
 const IFRAME_WIDTH = 1280;
 const IFRAME_HEIGHT = 800;
 
+function useIsTouchDevice() {
+  const [isTouch, setIsTouch] = useState(false);
+
+  useEffect(() => {
+    const checkTouch = () => {
+      if (typeof window === "undefined") return;
+      const isCoarse = window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const isMobileWidth = window.innerWidth <= 768;
+      const hasTouch = "ontouchstart" in window || (navigator && navigator.maxTouchPoints > 0);
+      setIsTouch(isCoarse || (isMobileWidth && hasTouch));
+    };
+    checkTouch();
+    window.addEventListener("resize", checkTouch);
+    return () => window.removeEventListener("resize", checkTouch);
+  }, []);
+
+  return isTouch;
+}
+
 function MiniProjectFrame({ project }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.35);
+  const isTouchDevice = useIsTouchDevice();
 
   const isLiveWeb = project.liveUrl && (project.liveUrl.startsWith("http://") || project.liveUrl.startsWith("https://"));
 
   useEffect(() => {
-    if (!isLiveWeb || !containerRef.current) return;
+    if (!isLiveWeb || isTouchDevice || !containerRef.current) return;
     const updateScale = () => {
       if (containerRef.current) {
         setScale(containerRef.current.offsetWidth / IFRAME_WIDTH);
@@ -25,7 +45,7 @@ function MiniProjectFrame({ project }) {
     const observer = new ResizeObserver(updateScale);
     observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, [isLiveWeb]);
+  }, [isLiveWeb, isTouchDevice]);
 
   return (
     <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-md flex flex-col mb-6 group/frame transition-colors hover:border-accent/60">
@@ -57,29 +77,49 @@ function MiniProjectFrame({ project }) {
         )}
       </div>
 
-      {/* Interface Area: Pure Live Iframe Web Rendering */}
+      {/* Interface Area: Desktop Iframe vs Mobile Direct Link Banner */}
       <div
         ref={containerRef}
         className="relative w-full flex-1 bg-white overflow-hidden"
       >
         {isLiveWeb ? (
-          <iframe
-            src={project.liveUrl}
-            title={`${project.title} Live Interface`}
-            loading="lazy"
-            style={{
-              width: `${IFRAME_WIDTH}px`,
-              height: `${IFRAME_HEIGHT}px`,
-              border: 'none',
-              background: 'white',
-              transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              pointerEvents: 'none',
-            }}
-          />
+          !isTouchDevice ? (
+            <iframe
+              src={project.liveUrl}
+              title={`${project.title} Live Interface`}
+              loading="lazy"
+              style={{
+                width: `${IFRAME_WIDTH}px`,
+                height: `${IFRAME_HEIGHT}px`,
+                border: 'none',
+                background: 'white',
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                pointerEvents: 'none',
+              }}
+            />
+          ) : (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative w-full h-full bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono group/banner transition-colors hover:bg-border/30"
+            >
+              <span className="text-accent font-bold text-xs tracking-widest uppercase mb-1 flex items-center gap-1">
+                <span>{"// LIVE INTERFACE PREVIEW"}</span>
+                <ArrowUpRight size={12} />
+              </span>
+              <span className="text-foreground text-xs font-bold uppercase tracking-wider group-hover/banner:text-accent transition-colors">
+                {project.title}
+              </span>
+              <span className="text-secondary/80 text-[10px] tracking-wider uppercase mt-2 border border-border/80 px-2.5 py-1 bg-background/80 group-hover/banner:border-accent/60 transition-colors">
+                TAP TO OPEN FULL PAGE ↗
+              </span>
+            </a>
+          )
         ) : (
           <div className="relative w-full h-full bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono">
             <span className="text-accent font-bold text-xs tracking-widest uppercase mb-1">{"// LIVE PREVIEW"}</span>

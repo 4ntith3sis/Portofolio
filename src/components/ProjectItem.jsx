@@ -9,12 +9,32 @@ const IFRAME_HEIGHT = 800;
 const MOBILE_IFRAME_WIDTH = 390;  // real mobile viewport width
 const MOBILE_IFRAME_HEIGHT = 844; // real mobile viewport height (iPhone 14)
 
+function useIsTouchDevice() {
+  const [isTouch, setIsTouch] = useState(false);
+
+  useEffect(() => {
+    const checkTouch = () => {
+      if (typeof window === "undefined") return;
+      const isCoarse = window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const isMobileWidth = window.innerWidth <= 768;
+      const hasTouch = "ontouchstart" in window || (navigator && navigator.maxTouchPoints > 0);
+      setIsTouch(isCoarse || (isMobileWidth && hasTouch));
+    };
+    checkTouch();
+    window.addEventListener("resize", checkTouch);
+    return () => window.removeEventListener("resize", checkTouch);
+  }, []);
+
+  return isTouch;
+}
+
 export default function ProjectItem({ project, index }) {
   const hasLiveUrl = project.liveUrl && project.liveUrl.trim() !== "";
   const hasSourceUrl = project.sourceUrl && project.sourceUrl.trim() !== "";
   const targetUrl = project.liveUrl || project.sourceUrl;
 
   const isMobile = project.mobilePreview === true;
+  const isTouchDevice = useIsTouchDevice();
 
   // Desktop preview scale
   const previewRef = useRef(null);
@@ -26,7 +46,7 @@ export default function ProjectItem({ project, index }) {
 
   // Desktop scale effect
   useEffect(() => {
-    if (!hasLiveUrl || isMobile || !previewRef.current) return;
+    if (!hasLiveUrl || isMobile || isTouchDevice || !previewRef.current) return;
     const updateScale = () => {
       if (previewRef.current) {
         setIframeScale(previewRef.current.offsetWidth / IFRAME_WIDTH);
@@ -36,11 +56,11 @@ export default function ProjectItem({ project, index }) {
     const observer = new ResizeObserver(updateScale);
     observer.observe(previewRef.current);
     return () => observer.disconnect();
-  }, [hasLiveUrl, isMobile]);
+  }, [hasLiveUrl, isMobile, isTouchDevice]);
 
   // Mobile scale effect
   useEffect(() => {
-    if (!hasLiveUrl || !isMobile || !mobileContainerRef.current) return;
+    if (!hasLiveUrl || !isMobile || isTouchDevice || !mobileContainerRef.current) return;
     const updateMobileScale = () => {
       const el = mobileContainerRef.current;
       if (!el) return;
@@ -51,7 +71,7 @@ export default function ProjectItem({ project, index }) {
     const observer = new ResizeObserver(updateMobileScale);
     observer.observe(mobileContainerRef.current);
     return () => observer.disconnect();
-  }, [hasLiveUrl, isMobile]);
+  }, [hasLiveUrl, isMobile, isTouchDevice]);
 
   return (
     <motion.article
@@ -143,8 +163,49 @@ export default function ProjectItem({ project, index }) {
         {/* Right Column: Live Web Preview (5 cols) */}
         <div className="lg:col-span-5 relative mt-6 lg:mt-0">
           {hasLiveUrl ? (
-            isMobile ? (
-              /* Mobile Preview */
+            isTouchDevice ? (
+              /* Mobile Touch Device direct full page preview card */
+              <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-background shadow-2xl flex flex-col group/frame">
+                <div className="flex items-center justify-between px-3 py-2 bg-border/40 border-b border-border text-[10px] font-mono select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-accent/80 inline-block"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-foreground/20 inline-block"></span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-background px-2.5 py-0.5 border border-border text-secondary truncate max-w-[200px] sm:max-w-[260px]">
+                    <span className="text-accent font-semibold">https://</span>
+                    <span className="truncate">{project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                  </div>
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-secondary hover:text-accent transition-colors flex items-center gap-1"
+                    title="Open in new tab"
+                  >
+                    <ExternalLink size={12} />
+                  </a>
+                </div>
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative w-full flex-1 bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono group/banner transition-colors hover:bg-border/30"
+                >
+                  <span className="text-accent font-bold text-xs tracking-widest uppercase mb-1 flex items-center gap-1">
+                    <span>{"// LIVE PROJECT PREVIEW"}</span>
+                    <ArrowUpRight size={12} />
+                  </span>
+                  <span className="text-foreground text-sm font-bold uppercase tracking-wider group-hover/banner:text-accent transition-colors">
+                    {project.title}
+                  </span>
+                  <span className="text-secondary/80 text-[10px] tracking-wider uppercase mt-2 border border-border/80 px-3 py-1 bg-background/80 group-hover/banner:border-accent/60 transition-colors">
+                    TAP TO OPEN FULL PAGE ↗
+                  </span>
+                </a>
+              </div>
+            ) : isMobile ? (
+              /* Mobile Desktop Emulated Preview (Desktop viewports only) */
               <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div
