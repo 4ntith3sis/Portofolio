@@ -11,8 +11,27 @@ const IFRAME_HEIGHT = 800;
 const MiniProjectFrame = memo(function MiniProjectFrame({ project }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.35);
+  const [shouldMount, setShouldMount] = useState(false);
 
   const isLiveWeb = project.liveUrl && (project.liveUrl.startsWith("http://") || project.liveUrl.startsWith("https://"));
+
+  // Smart Custom Observer: 400px margin buffer + permanent lock in DOM
+  useEffect(() => {
+    if (!isLiveWeb || !containerRef.current || shouldMount) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldMount(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [isLiveWeb, shouldMount]);
 
   useEffect(() => {
     if (!isLiveWeb || !containerRef.current) return;
@@ -65,28 +84,33 @@ const MiniProjectFrame = memo(function MiniProjectFrame({ project }) {
         style={{ contain: 'paint layout' }}
       >
         {isLiveWeb ? (
-          <iframe
-            src={project.liveUrl}
-            title={`${project.title} Live Interface`}
-            loading="eager"
-            style={{
-              width: `${IFRAME_WIDTH}px`,
-              height: `${IFRAME_HEIGHT}px`,
-              border: 'none',
-              background: 'white',
-              transform: `scale(${scale}) translateZ(0)`,
-              transformOrigin: 'top left',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              pointerEvents: 'none',
-              willChange: 'transform',
-              transformStyle: 'preserve-3d',
-              backfaceVisibility: 'hidden',
-              contain: 'strict',
-              contentVisibility: 'auto',
-            }}
-          />
+          shouldMount ? (
+            <iframe
+              src={project.liveUrl}
+              title={`${project.title} Live Interface`}
+              style={{
+                width: `${IFRAME_WIDTH}px`,
+                height: `${IFRAME_HEIGHT}px`,
+                border: 'none',
+                background: 'white',
+                transform: `scale(${scale}) translateZ(0)`,
+                transformOrigin: 'top left',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                pointerEvents: 'none',
+                willChange: 'transform',
+                transformStyle: 'preserve-3d',
+                backfaceVisibility: 'hidden',
+                contain: 'strict',
+                contentVisibility: 'auto',
+              }}
+            />
+          ) : (
+            <div className="relative w-full h-full bg-white flex items-center justify-center">
+              <span className="text-secondary/40 font-mono text-[10px] uppercase tracking-widest">LOADING PREVIEW...</span>
+            </div>
+          )
         ) : (
           <div className="relative w-full h-full bg-border/20 flex flex-col items-center justify-center p-6 text-center select-none font-mono">
             <span className="text-accent font-bold text-xs tracking-widest uppercase mb-1">{"// LIVE PREVIEW"}</span>

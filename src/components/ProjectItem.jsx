@@ -24,6 +24,29 @@ export default function ProjectItem({ project, index }) {
   const mobileContainerRef = useRef(null);
   const [mobileScale, setMobileScale] = useState(1);
 
+  // Smart Custom Observer: 400px margin buffer + permanent lock in DOM
+  const [shouldMount, setShouldMount] = useState(false);
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (!hasLiveUrl || shouldMount) return;
+    const targetEl = previewRef.current || mobileContainerRef.current || cardRef.current;
+    if (!targetEl) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldMount(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
+
+    observer.observe(targetEl);
+    return () => observer.disconnect();
+  }, [hasLiveUrl, shouldMount]);
+
   // Desktop scale effect
   useEffect(() => {
     if (!hasLiveUrl || isMobile || !previewRef.current) return;
@@ -179,29 +202,34 @@ export default function ProjectItem({ project, index }) {
                       className="relative flex-1 overflow-hidden bg-white"
                       style={{ contain: 'paint layout' }}
                     >
-                      <iframe
-                        src={project.liveUrl}
-                        title={`${project.title} Live Preview`}
-                        loading="eager"
-                        scrolling="no"
-                        style={{
-                          width: `${MOBILE_IFRAME_WIDTH}px`,
-                          height: `${MOBILE_IFRAME_HEIGHT}px`,
-                          border: 'none',
-                          background: 'white',
-                          transform: `scale(${mobileScale}) translateZ(0)`,
-                          transformOrigin: 'top left',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          pointerEvents: 'none',
-                          willChange: 'transform',
-                          transformStyle: 'preserve-3d',
-                          backfaceVisibility: 'hidden',
-                          contain: 'strict',
-                          contentVisibility: 'auto',
-                        }}
-                      />
+                      {shouldMount ? (
+                        <iframe
+                          src={project.liveUrl}
+                          title={`${project.title} Live Preview`}
+                          scrolling="no"
+                          style={{
+                            width: `${MOBILE_IFRAME_WIDTH}px`,
+                            height: `${MOBILE_IFRAME_HEIGHT}px`,
+                            border: 'none',
+                            background: 'white',
+                            transform: `scale(${mobileScale}) translateZ(0)`,
+                            transformOrigin: 'top left',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            pointerEvents: 'none',
+                            willChange: 'transform',
+                            transformStyle: 'preserve-3d',
+                            backfaceVisibility: 'hidden',
+                            contain: 'strict',
+                            contentVisibility: 'auto',
+                          }}
+                        />
+                      ) : (
+                        <div className="relative w-full h-full bg-white flex items-center justify-center">
+                          <span className="text-secondary/40 font-mono text-[10px] uppercase tracking-widest">LOADING PREVIEW...</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -237,28 +265,33 @@ export default function ProjectItem({ project, index }) {
                   className="relative w-full flex-1 bg-background overflow-hidden"
                   style={{ contain: 'paint layout' }}
                 >
-                  <iframe
-                    src={project.liveUrl}
-                    title={`${project.title} Live Preview`}
-                    loading="eager"
-                    style={{
-                      width: `${IFRAME_WIDTH}px`,
-                      height: `${IFRAME_HEIGHT}px`,
-                      border: 'none',
-                      background: 'white',
-                      transform: `scale(${iframeScale}) translateZ(0)`,
-                      transformOrigin: 'top left',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      pointerEvents: 'none',
-                      willChange: 'transform',
-                      transformStyle: 'preserve-3d',
-                      backfaceVisibility: 'hidden',
-                      contain: 'strict',
-                      contentVisibility: 'auto',
-                    }}
-                  />
+                  {shouldMount ? (
+                    <iframe
+                      src={project.liveUrl}
+                      title={`${project.title} Live Preview`}
+                      style={{
+                        width: `${IFRAME_WIDTH}px`,
+                        height: `${IFRAME_HEIGHT}px`,
+                        border: 'none',
+                        background: 'white',
+                        transform: `scale(${iframeScale}) translateZ(0)`,
+                        transformOrigin: 'top left',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        pointerEvents: 'none',
+                        willChange: 'transform',
+                        transformStyle: 'preserve-3d',
+                        backfaceVisibility: 'hidden',
+                        contain: 'strict',
+                        contentVisibility: 'auto',
+                      }}
+                    />
+                  ) : (
+                    <div className="relative w-full h-full bg-white flex items-center justify-center">
+                      <span className="text-secondary/40 font-mono text-[10px] uppercase tracking-widest">LOADING PREVIEW...</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )
