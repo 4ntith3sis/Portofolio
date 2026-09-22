@@ -29,7 +29,8 @@ export default function ProjectItem({ project, index }) {
     if (!hasLiveUrl || isMobile || !previewRef.current) return;
     const updateScale = () => {
       if (previewRef.current) {
-        setIframeScale(previewRef.current.offsetWidth / IFRAME_WIDTH);
+        const nextScale = previewRef.current.offsetWidth / IFRAME_WIDTH;
+        setIframeScale((prev) => (Math.abs(prev - nextScale) > 0.005 ? nextScale : prev));
       }
     };
     updateScale();
@@ -45,7 +46,7 @@ export default function ProjectItem({ project, index }) {
       const el = mobileContainerRef.current;
       if (!el) return;
       const s = el.offsetWidth / MOBILE_IFRAME_WIDTH;
-      setMobileScale(s);
+      setMobileScale((prev) => (Math.abs(prev - s) > 0.005 ? s : prev));
     };
     updateMobileScale();
     const observer = new ResizeObserver(updateMobileScale);
@@ -57,7 +58,7 @@ export default function ProjectItem({ project, index }) {
     <motion.article
       initial={{ opacity: 0, y: 35 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, amount: 0.2 }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="border-b border-border py-8 sm:py-12 lg:py-16 group transition-colors hover:bg-background/60"
     >
@@ -193,6 +194,9 @@ export default function ProjectItem({ project, index }) {
                           top: 0,
                           left: 0,
                           pointerEvents: 'none',
+                          willChange: 'transform',
+                          transformStyle: 'preserve-3d',
+                          backfaceVisibility: 'hidden',
                         }}
                       />
                     </div>
@@ -244,6 +248,9 @@ export default function ProjectItem({ project, index }) {
                       top: 0,
                       left: 0,
                       pointerEvents: 'none',
+                      willChange: 'transform',
+                      transformStyle: 'preserve-3d',
+                      backfaceVisibility: 'hidden',
                     }}
                   />
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, memo } from "react";
 import { motion } from "framer-motion";
 import { miniProjects } from "@/data/miniProjects";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
@@ -8,7 +8,7 @@ import { ArrowUpRight, ExternalLink } from "lucide-react";
 const IFRAME_WIDTH = 1280;
 const IFRAME_HEIGHT = 800;
 
-function MiniProjectFrame({ project }) {
+const MiniProjectFrame = memo(function MiniProjectFrame({ project }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.35);
 
@@ -18,7 +18,8 @@ function MiniProjectFrame({ project }) {
     if (!isLiveWeb || !containerRef.current) return;
     const updateScale = () => {
       if (containerRef.current) {
-        setScale(containerRef.current.offsetWidth / IFRAME_WIDTH);
+        const nextScale = containerRef.current.offsetWidth / IFRAME_WIDTH;
+        setScale((prev) => (Math.abs(prev - nextScale) > 0.005 ? nextScale : prev));
       }
     };
     updateScale();
@@ -78,6 +79,9 @@ function MiniProjectFrame({ project }) {
               top: 0,
               left: 0,
               pointerEvents: 'none',
+              willChange: 'transform',
+              transformStyle: 'preserve-3d',
+              backfaceVisibility: 'hidden',
             }}
           />
         ) : (
@@ -89,7 +93,7 @@ function MiniProjectFrame({ project }) {
       </div>
     </div>
   );
-}
+});
 
 export default function MiniProjects() {
   return (
@@ -99,7 +103,7 @@ export default function MiniProjects() {
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5 }}
           className="flex items-center justify-between flex-wrap gap-y-1 border-b border-border pb-4 mb-8 sm:mb-16 font-mono text-xs text-secondary tracking-widest uppercase"
         >
@@ -111,7 +115,7 @@ export default function MiniProjects() {
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
           className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 pb-6 border-b border-border gap-4"
         >
@@ -139,7 +143,7 @@ export default function MiniProjects() {
                 key={project.number}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 className="border border-border p-6 sm:p-8 bg-background flex flex-col justify-between hover:border-accent/60 transition-colors duration-300 group shadow-sm h-full"
               >
