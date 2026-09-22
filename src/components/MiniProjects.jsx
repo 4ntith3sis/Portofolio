@@ -62,18 +62,19 @@ const MiniProjectFrame = memo(function MiniProjectFrame({ project }) {
       <div
         ref={containerRef}
         className="relative w-full flex-1 bg-white overflow-hidden"
+        style={{ contain: 'paint layout' }}
       >
         {isLiveWeb ? (
           <iframe
             src={project.liveUrl}
             title={`${project.title} Live Interface`}
-            loading="lazy"
+            loading="eager"
             style={{
               width: `${IFRAME_WIDTH}px`,
               height: `${IFRAME_HEIGHT}px`,
               border: 'none',
               background: 'white',
-              transform: `scale(${scale})`,
+              transform: `scale(${scale}) translateZ(0)`,
               transformOrigin: 'top left',
               position: 'absolute',
               top: 0,
@@ -82,6 +83,8 @@ const MiniProjectFrame = memo(function MiniProjectFrame({ project }) {
               willChange: 'transform',
               transformStyle: 'preserve-3d',
               backfaceVisibility: 'hidden',
+              contain: 'strict',
+              contentVisibility: 'auto',
             }}
           />
         ) : (

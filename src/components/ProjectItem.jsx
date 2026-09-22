@@ -177,18 +177,19 @@ export default function ProjectItem({ project, index }) {
                     <div
                       ref={mobileContainerRef}
                       className="relative flex-1 overflow-hidden bg-white"
+                      style={{ contain: 'paint layout' }}
                     >
                       <iframe
                         src={project.liveUrl}
                         title={`${project.title} Live Preview`}
-                        loading="lazy"
+                        loading="eager"
                         scrolling="no"
                         style={{
                           width: `${MOBILE_IFRAME_WIDTH}px`,
                           height: `${MOBILE_IFRAME_HEIGHT}px`,
                           border: 'none',
                           background: 'white',
-                          transform: `scale(${mobileScale})`,
+                          transform: `scale(${mobileScale}) translateZ(0)`,
                           transformOrigin: 'top left',
                           position: 'absolute',
                           top: 0,
@@ -197,6 +198,8 @@ export default function ProjectItem({ project, index }) {
                           willChange: 'transform',
                           transformStyle: 'preserve-3d',
                           backfaceVisibility: 'hidden',
+                          contain: 'strict',
+                          contentVisibility: 'auto',
                         }}
                       />
                     </div>
@@ -232,17 +235,18 @@ export default function ProjectItem({ project, index }) {
                 <div
                   ref={previewRef}
                   className="relative w-full flex-1 bg-background overflow-hidden"
+                  style={{ contain: 'paint layout' }}
                 >
                   <iframe
                     src={project.liveUrl}
                     title={`${project.title} Live Preview`}
-                    loading="lazy"
+                    loading="eager"
                     style={{
                       width: `${IFRAME_WIDTH}px`,
                       height: `${IFRAME_HEIGHT}px`,
                       border: 'none',
                       background: 'white',
-                      transform: `scale(${iframeScale})`,
+                      transform: `scale(${iframeScale}) translateZ(0)`,
                       transformOrigin: 'top left',
                       position: 'absolute',
                       top: 0,
@@ -251,6 +255,8 @@ export default function ProjectItem({ project, index }) {
                       willChange: 'transform',
                       transformStyle: 'preserve-3d',
                       backfaceVisibility: 'hidden',
+                      contain: 'strict',
+                      contentVisibility: 'auto',
                     }}
                   />
                 </div>
