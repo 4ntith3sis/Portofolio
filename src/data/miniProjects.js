@@ -22,5 +22,13 @@ export const miniProjects = [
     technologies: ["Next.js", "React", "Tailwind CSS", "HTML5 Canvas"],
     liveUrl: "https://lumia-studio.vercel.app/",
     githubUrl: "https://github.com/4ntith3sis/lumia-studio"
+  },
+  {
+    number: "04",
+    title: "Chromoa Magic Hand",
+    description: "An interactive computer vision web application powered by MediaPipe hand tracking, turning real-time gestures into magical wands for light trails, planting flowers, building constellations, and summoning interactive creatures.",
+    technologies: ["Next.js", "React", "MediaPipe", "Tailwind CSS", "HTML5 Canvas"],
+    liveUrl: "https://chromoa-magic-hand.vercel.app/",
+    githubUrl: "https://github.com/4ntith3sis/chromoa-magic-hand"
   }
 ];
