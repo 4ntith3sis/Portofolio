@@ -7,7 +7,6 @@ export const projects = [
     description: "A modern home lifestyle store management system for Edgar Space, designed to manage home accessories and decoration products through product management, category management, flexible product specifications, inventory tracking, curated collections, and a dedicated administrative dashboard.",
     technologies: ["Next.js", "React", "Tailwind CSS", "Express.js", "Node.js", "PostgreSQL", "Supabase", "Prisma ORM"],
     liveUrl: "https://edgar-space.vercel.app/",
-    sourceUrl: "https://github.com/4ntith3sis/edgar-space",
     featured: true
   },
   {
@@ -18,7 +17,6 @@ export const projects = [
     description: "A modern high-fashion e-commerce showcase for Kares Studio, featuring curated collections, exclusive drops, product specifications, and a high-end editorial shopping experience.",
     technologies: ["Next.js", "React", "TypeScript", "Custom Vanilla CSS", "Supabase", "PostgreSQL"],
     liveUrl: "https://kares-studio.vercel.app",
-    sourceUrl: "https://github.com/4ntith3sis/Kares-Studio",
     featured: true
   },
   {
@@ -29,7 +27,6 @@ export const projects = [
     description: "LILLO is a web-based catalog and e-commerce platform for key accessories, built with a modern full-stack architecture using Next.js, Express.js, and Appwrite within a unified application.",
     technologies: ["Next.js", "React", "TypeScript", "Vanilla CSS", "Express.js", "Node.js", "Appwrite"],
     liveUrl: "https://lillo-key-accessories.vercel.app/",
-    sourceUrl: "https://github.com/4ntith3sis/lillo-key-accessories",
     featured: true
   }
 ];
