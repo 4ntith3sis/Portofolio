@@ -237,18 +237,7 @@ export default function MiniProjects() {
                     </a>
                   )}
 
-                  {/* Secondary CTA: GITHUB ↗ */}
-                  {hasGithubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-foreground font-bold hover:text-accent transition-colors py-1 group/github"
-                    >
-                      <span>GITHUB</span>
-                      <ArrowUpRight size={14} className="group-hover/github:translate-x-0.5 group-hover/github:-translate-y-0.5 transition-transform duration-300 text-secondary group-hover/github:text-accent" />
-                    </a>
-                  )}
+
                 </div>
               </motion.article>
             );

@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
 
 const IFRAME_WIDTH = 1280;
 const IFRAME_HEIGHT = 800;
@@ -149,18 +149,7 @@ export default function ProjectItem({ project, index }) {
                 <span>LIVE PREVIEW UNAVAILABLE</span>
               </span>
             )}
-            {hasSourceUrl && (
-              <a
-                href={project.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-foreground font-bold hover:text-accent transition-colors py-1 group/link"
-              >
-                <Github size={15} />
-                <span>VIEW REPOSITORY</span>
-                <ArrowUpRight size={14} className="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform" />
-              </a>
-            )}
+
           </div>
         </div>
 
