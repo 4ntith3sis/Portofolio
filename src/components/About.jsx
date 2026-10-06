@@ -76,7 +76,7 @@ export default function About() {
                 {"// 02 INTEREST"}
               </span>
               <ul className="font-mono text-sm sm:text-base font-medium space-y-1 text-foreground">
-                <li className="hover:text-accent transition-colors">Data Analysis</li>
+                <li className="hover:text-accent transition-colors">Data Analyst</li>
                 <li className="hover:text-accent transition-colors">Digital Products</li>
               </ul>
             </motion.div>
