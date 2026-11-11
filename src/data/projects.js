@@ -28,5 +28,25 @@ export const projects = [
     technologies: ["Next.js", "React", "TypeScript", "Vanilla CSS", "Express.js", "Node.js", "Appwrite"],
     liveUrl: "https://lillo-key-accessories.vercel.app/",
     featured: true
+  },
+  {
+    number: "04",
+    slug: "EASYTAX",
+    title: "EasyTax",
+    subtitle: "TAX MANAGEMENT PLATFORM",
+    description: "EasyTax is a tax management platform designed to simplify tax-related workflows and provide a clear, accessible user experience.",
+    technologies: ["Next.js", "React", "Tailwind CSS"],
+    liveUrl: "https://et-demov2.vercel.app",
+    featured: true
+  },
+  {
+    number: "05",
+    slug: "EASY OFFICE",
+    title: "Easy Office",
+    subtitle: "OFFICE MANAGEMENT PLATFORM",
+    description: "Easy Office is an office management platform designed to simplify daily administrative workflows and provide an efficient digital workspace.",
+    technologies: ["Next.js", "React", "Tailwind CSS"],
+    liveUrl: "https://eo-web-full.vercel.app/",
+    featured: true
   }
 ];
